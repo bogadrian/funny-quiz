@@ -11,6 +11,8 @@ class DOMSelections {
   this.form = document.getElementById('form');
   this.textSucces = document.querySelector('.text-success');
   this.btnSend = document.querySelector('.btn-send');
+  this.counterVar = document.querySelector('.counter');
+  this.counterDiv = document.getElementById('counter-div');
   }
 };
 
@@ -29,10 +31,13 @@ const selector = new DOMSelections;
 
 selector.result.style.display = 'none';
 selector.progressBar.style.display = 'none';
-selector.formDiv.style.display = 'none'
+selector.formDiv.style.display = 'none';
+selector.counterDiv.style.display = 'none';
 Questions.createQuestion(q1);
 // call send Button function, the main function of the app where the logic flows reside 
 sendButtonFunction()
+//call show counter to display the number of question on UI
+Questions.showCounter(1);
   }
 
 // create UI function 
@@ -91,7 +96,7 @@ const selector = new DOMSelections;
       button.type = 'submit'
       p.classList = 'lead text-muted font-weight-bold col';
      
-    // append first elemnt created in the DOM then all the rest of elemnts created to it
+    // append firs elemnt create d in the DOm then all the rest of elemnts created to it
       selector.form.insertAdjacentElement('afterbegin', divGen);
      
       // append elements to the DOM
@@ -157,9 +162,13 @@ const selector = new DOMSelections;
   // start quiz function - loads the first question and the progress bar to the DOM
 static startQuiz (e) {
 const selector = new DOMSelections;   
+    selector.result.style.display = 'block'
     selector.progressBar.style.display = 'block';
-    selector.prog.setAttribute('style', 'width:0%')
-    selector.formDiv.style.display = 'block' 
+    selector.counterDiv.style.display = 'block';
+    selector.prog.setAttribute('style', 'width:0%');
+    selector.formDiv.style.display = 'block';
+    //call show counter to display the number of question on UI
+    Questions.showCounter(0);
   }
 // increase precent function takes care of updating the style width proriety of the progress bar in order to display the progress 
 static increasePrecent(value) {
@@ -170,12 +179,19 @@ const selector = new DOMSelections;
     selector.progressPrecent.textContent = `${value}%`
     selector.textSucces.textContent = `${value}%`
   }
+  //show counter to display the number of question on UI
+  static showCounter (counter) {
+   const selector = new DOMSelections();
+  
+   console.log(counter)
+   selector.counterVar.textContent = counter + 1;
+  }
 };
 
 
 
 // the questions created with new questions constructor class. I probably better cut them form the global scope and put them in some function or so
-const q1 = new Questions('Where do you see yourself living 10 years from now?', ['In a bustling city, like New York, Paris or London!', 'Not too far from the rest of my family!', 'In my parent\'s basement'], ['incorrect', 'incorrect', 'correct']);
+const q1 = new Questions('	Where do you see yourself living 10 years from now?', ['In a bustling city, like New York, Paris or London!', 'Not too far from the rest of my family!', 'In my parent\'s basement'], ['incorrect', 'incorrect', 'correct']);
 const q2 = new Questions('What did you do last weekend?', ['I went out on the town.', 'I got drunk, why you ask?','Spent time with me, my sweats and the TV'], ['incorrect', 'correct', 'incorrect']);
 const q3 = new Questions('You talk most often to?', ['To my immaginary friend Sam the corsar!', 'Your family and friends', 'Your pet or yourself' ], ['correct', 'incorrect', 'correct']);
 const q4 = new Questions('Do you like to try new things?', ['Every now and then I like the exhilaration of trying something new', 'No, because I know I probably will not like them', 'Yes of course, every new label of wisky!'], ['incorrect', 'incorrect', 'correct']);
@@ -184,7 +200,8 @@ const q6 = new Questions('If you could break the legs of someone you despised wi
 const q7 = new Questions('Your child has been repeatedly harassed by a bully at school. Do you...', ['Ask for a meeting with the principal and the bully s parents.', 'Call the bully s parents and leave a nasty message!', 'Wait the bully out of the school and teach him a good lesson!'], ['incorrect', 'incorrect', 'correct']);
 const q8 = new Questions('You are out on the town and, across the bar, you see your fiancé making out with someone else. Do you...', ['Walk over and throw a drink in their face', 'Leave the bar, head to their place and set it on fire', 'Change the finacé'], ['incorrect', 'incorrect', 'correct']);
 const q9 = new Questions('Is anything better than angry sex?', ['Yes, a bottle of wisky!', 'No way! The best thing ever!', 'Maybe but I did not tried yet the maybe!'],['incorrect', 'incorrect', 'correct']);
-const q10 = new Questions('Have you ever made your partner cancel plans with his buddies just to make sure you are still in charge?', ['Yes, every single time!', 'No man! That is so ugly!', 'No but I think I will now you gave me the idea!'], ['incorrect', 'incorrect', 'correct'])
+const q10 = new Questions('Have you ever made your partner cancel plans with his buddies just to make sure you are still in charge?', ['Yes, every single time!', 'No man! That is so ugly!', 'No but I think I will now you gave me the idea!'], ['incorrect', 'incorrect', 'correct']);
+// const q11 = new Questions('You like girls or you like mans?', ['Ohhh! Of course I like girls!', 'No girls man! I like boys', 'Neather girls newthe mans, I like my neighbour!'], ['incorrect', 'incorrect', 'correct']);
 
 Questions.init();
 // load event listner function 
@@ -192,7 +209,7 @@ function eventListener () {
   const selector = new DOMSelections;
   selector.start.addEventListener('click', Questions.startQuiz);
 };
-// call event listener function 
+// call event listenr function 
  eventListener();
 
 
@@ -215,6 +232,7 @@ function eventListener () {
     // first logic flow, takes care of increasing counter by 1 on each click; 
     if (document.getElementById('answer1').checked || document.getElementById('answer2').checked || document.getElementById('answer3').checked) {
        counter === arr.length - 1 ? counter = arr.length -1 : counter += 1;
+       Questions.showCounter(counter);
     }; 
     
     // second logic flow, takes care of progress variable increase 
@@ -225,12 +243,15 @@ function eventListener () {
     // third logic flow, display result function once the counter has reched the length of the array question and display the result after 1 second;
     if (counter === arr.length -1) {
       setTimeout(() => {
+        const selector = new DOMSelections;
         Questions.displayResult(progress);
       }, 1000)
-    }
+    }; 
+
+    
 
   
-   // the main logic flow; takes care of calling the proper function related to the conditions that are met
+   // the main logic flow; takes care of calling the proper function elated to the conditions that are met
    if (document.getElementById('answer1').checked && ans1 === 'correct' ) {
      console.log(counter, progress)
         Questions.createQuestion(arr[counter]);
@@ -255,5 +276,7 @@ function eventListener () {
    }
  });
 }
+
+
 
 
