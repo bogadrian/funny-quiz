@@ -1,4 +1,5 @@
 
+
 // Dom selectors class
 class DOMSelections {
   constructor () {
@@ -9,17 +10,19 @@ class DOMSelections {
   this.progressPrecent = document.getElementById('progress-precent');
   this.formDiv = document.getElementById('form-div');
   this.form = document.getElementById('form');
-  this.textSucces = document.querySelector('.text-success');
+  this.textSucces = document.querySelector('.span-points');
   this.btnSend = document.querySelector('.btn-send');
   this.counterVar = document.querySelector('.counter');
   this.counterDiv = document.getElementById('counter-div');
+  this.divStartAgain = document.getElementById('btn-start-again');
+  this.btnStartAgain = document.querySelector('.btn-start-again');
   }
 };
 
 
 // create data structure class
 class Questions  {
-  constructor(question, answer, correct, id) {
+  constructor(question, answer, correct) {
     this.question = question;
     this.answer = answer;
     this.correct = correct;
@@ -33,6 +36,7 @@ selector.result.style.display = 'none';
 selector.progressBar.style.display = 'none';
 selector.formDiv.style.display = 'none';
 selector.counterDiv.style.display = 'none';
+selector.divStartAgain.style.display = 'none';
 Questions.createQuestion(q1);
 // call send Button function, the main function of the app where the logic flows reside 
 sendButtonFunction()
@@ -124,12 +128,11 @@ const selector = new DOMSelections;
     if (value === 0) {
       string = 'No words. Just hang yoursef!'
     }else if (value === 10) {
-      string = 'What you want me to say? Jus clean the room!'
+      string = 'What you want me to say? Just clean the room!'
     }else if (value === 20) {
-      string = 'Shame on you!'
-      string = 'Bravo! You are good man! But still, Is that really you? Take a look to you in a mirror!'
+      string = 'You are such an ...! No matter! Shame on you!' 
     }else if (value === 30) {
-      string = 'Oh my god how stupid yiu are!'
+      string = 'Oh my god how stupid you are!'
     }else if (value === 40) {
      string = 'Beah, only this you can? You\'re worth nothing! I would be ashemd if I were you!'
     }else if (value === 50) {
@@ -151,24 +154,31 @@ const selector = new DOMSelections;
     <h1> You got ${value} points this round! ${string}</h1>
     </div>
     `;
-
+    // show the start again button
+    selector.divStartAgain.style.display = 'block';
+    //add the form created to the DOM
     selector.form.innerHTML = html;
     // relod the page on start quiz button click 
     selector.start.addEventListener('click', () => {
       location.reload()
       Questions.startQuiz()
     });
+    // add a button to start again the quiz when the display result is shown
+    selector.btnStartAgain.addEventListener('click', () => {
+      location.reload()
+    })
   }
   // start quiz function - loads the first question and the progress bar to the DOM
-static startQuiz (e) {
-const selector = new DOMSelections;   
+static startQuiz () {
+const selector = new DOMSelections;
+
     selector.result.style.display = 'block'
     selector.progressBar.style.display = 'block';
     selector.counterDiv.style.display = 'block';
     selector.prog.setAttribute('style', 'width:0%');
     selector.formDiv.style.display = 'block';
     //call show counter to display the number of question on UI
-    Questions.showCounter(0);
+    Questions.showCounter(1);
   }
 // increase precent function takes care of updating the style width proriety of the progress bar in order to display the progress 
 static increasePrecent(value) {
@@ -177,14 +187,12 @@ const selector = new DOMSelections;
     selector.result.style.display = 'block';
     selector.prog.setAttribute('style', `width:${value}%`);
     selector.progressPrecent.textContent = `${value}%`
-    selector.textSucces.textContent = `${value}%`
+    selector.textSucces.textContent = `${value}`
   }
   //show counter to display the number of question on UI
   static showCounter (counter) {
    const selector = new DOMSelections();
-  
-   console.log(counter)
-   selector.counterVar.textContent = counter + 1;
+   selector.counterVar.textContent = counter;
   }
 };
 
@@ -201,7 +209,7 @@ const q7 = new Questions('Your child has been repeatedly harassed by a bully at 
 const q8 = new Questions('You are out on the town and, across the bar, you see your fiancé making out with someone else. Do you...', ['Walk over and throw a drink in their face', 'Leave the bar, head to their place and set it on fire', 'Change the finacé'], ['incorrect', 'incorrect', 'correct']);
 const q9 = new Questions('Is anything better than angry sex?', ['Yes, a bottle of wisky!', 'No way! The best thing ever!', 'Maybe but I did not tried yet the maybe!'],['incorrect', 'incorrect', 'correct']);
 const q10 = new Questions('Have you ever made your partner cancel plans with his buddies just to make sure you are still in charge?', ['Yes, every single time!', 'No man! That is so ugly!', 'No but I think I will now you gave me the idea!'], ['incorrect', 'incorrect', 'correct']);
-// const q11 = new Questions('You like girls or you like mans?', ['Ohhh! Of course I like girls!', 'No girls man! I like boys', 'Neather girls newthe mans, I like my neighbour!'], ['incorrect', 'incorrect', 'correct']);
+const q11 = new Questions('You like girls or you like mans?', ['Ohhh! Of course I like girls!', 'No girls man! I like boys', 'Neather girls newthe mans, I like my neighbour!'], ['incorrect', 'incorrect', 'correct']);
 
 Questions.init();
 // load event listner function 
@@ -216,10 +224,10 @@ function eventListener () {
  // wrap in a clouser the event listener of submit question in order to render the counter and the progress variable private;
  function sendButtonFunction () {
   const selector = new DOMSelections;
-  const arr = [q1,q2,q3,q4,q5,q6,q7,q8,q9,q10]
+  const arr = [q1,q2,q3,q4,q5,q6,q7,q8,q9,q10,q11]
   
   let counter = 0;
-  let progress = 0;
+  let progressCount = 0;
  
   // event listenr for submit answer 
    selector.form.addEventListener('submit', (e) => {
@@ -231,52 +239,50 @@ function eventListener () {
    
     // first logic flow, takes care of increasing counter by 1 on each click; 
     if (document.getElementById('answer1').checked || document.getElementById('answer2').checked || document.getElementById('answer3').checked) {
-       counter === arr.length - 1 ? counter = arr.length -1 : counter += 1;
+       counter === arr.length  ? counter = arr.length : counter += 1;
        Questions.showCounter(counter);
     }; 
     
     // second logic flow, takes care of progress variable increase 
     if (document.getElementById('answer1').checked && ans1 === 'correct' || document.getElementById('answer2').checked && ans2 === 'correct' || document.getElementById('answer3').checked && ans3 === 'correct') {
-      progress === arr.length * 10 ? progress = arr.length * 10  : progress += 10;
+      progressCount !== arr.length * 10 ? progressCount +=  10 : progressCount = arr.length * 10;
+     
     };
-    
+   
     // third logic flow, display result function once the counter has reched the length of the array question and display the result after 1 second;
-    if (counter === arr.length -1) {
+    if (counter === arr.length - 1) {
       setTimeout(() => {
-        const selector = new DOMSelections;
-        Questions.displayResult(progress);
-      }, 1000)
+        Questions.displayResult(progressCount);
+      }, 1000);
+      setTimeout(() => {
+      location.reload()
+    }, 10000);
     }; 
 
     
 
-  
    // the main logic flow; takes care of calling the proper function elated to the conditions that are met
    if (document.getElementById('answer1').checked && ans1 === 'correct' ) {
-     console.log(counter, progress)
+    
         Questions.createQuestion(arr[counter]);
-        Questions.increasePrecent(progress);
+        Questions.increasePrecent(progressCount);
     }else if (document.getElementById('answer1').checked && ans1 === 'incorrect' ) {
-   
+      
       Questions.createQuestion(arr[counter]);
    }else if (document.getElementById('answer2').checked && ans2 === 'correct' ) {
         Questions.createQuestion(arr[counter]);
-        Questions.increasePrecent(progress);
+        Questions.increasePrecent(progressCount);
     }else if (document.getElementById('answer2').checked && ans2 === 'incorrect' ) {
    
       Questions.createQuestion(arr[counter]);
    }else if (document.getElementById('answer3').checked && ans3 === 'correct' ) {
         Questions.createQuestion(arr[counter]);
-        Questions.increasePrecent(progress);
+        Questions.increasePrecent(progressCount);
     }else if (document.getElementById('answer3').checked && ans3 === 'incorrect' ) {
   
       Questions.createQuestion(arr[counter]);
-   } else {
-      Questions.createQuestion(arr[counter]);
-   }
+  } 
  });
 }
-
-
 
 
