@@ -91,7 +91,7 @@ const selector = new DOMSelections;
       button.type = 'submit'
       p.classList = 'lead text-muted font-weight-bold col';
      
-    // append firs elemnt create d in the DOm then all the rest of elemnts created to it
+    // append first elemnt created in the DOM then all the rest of elemnts created to it
       selector.form.insertAdjacentElement('afterbegin', divGen);
      
       // append elements to the DOM
@@ -175,7 +175,7 @@ const selector = new DOMSelections;
 
 
 // the questions created with new questions constructor class. I probably better cut them form the global scope and put them in some function or so
-const q1 = new Questions('	Where do you see yourself living 10 years from now?', ['In a bustling city, like New York, Paris or London!', 'Not too far from the rest of my family!', 'In my parent\'s basement'], ['incorrect', 'incorrect', 'correct']);
+const q1 = new Questions('Where do you see yourself living 10 years from now?', ['In a bustling city, like New York, Paris or London!', 'Not too far from the rest of my family!', 'In my parent\'s basement'], ['incorrect', 'incorrect', 'correct']);
 const q2 = new Questions('What did you do last weekend?', ['I went out on the town.', 'I got drunk, why you ask?','Spent time with me, my sweats and the TV'], ['incorrect', 'correct', 'incorrect']);
 const q3 = new Questions('You talk most often to?', ['To my immaginary friend Sam the corsar!', 'Your family and friends', 'Your pet or yourself' ], ['correct', 'incorrect', 'correct']);
 const q4 = new Questions('Do you like to try new things?', ['Every now and then I like the exhilaration of trying something new', 'No, because I know I probably will not like them', 'Yes of course, every new label of wisky!'], ['incorrect', 'incorrect', 'correct']);
@@ -192,7 +192,7 @@ function eventListener () {
   const selector = new DOMSelections;
   selector.start.addEventListener('click', Questions.startQuiz);
 };
-// call event listenr function 
+// call event listener function 
  eventListener();
 
 
@@ -230,7 +230,7 @@ function eventListener () {
     }
 
   
-   // the main logic flow; takes care of calling the proper function elated to the conditions that are met
+   // the main logic flow; takes care of calling the proper function related to the conditions that are met
    if (document.getElementById('answer1').checked && ans1 === 'correct' ) {
      console.log(counter, progress)
         Questions.createQuestion(arr[counter]);
