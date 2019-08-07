@@ -86,9 +86,9 @@ const selector = new DOMSelections;
       checkbox1.value = `${question.correct[1]}`;
       checkbox2.value = `${question.correct[2]}`;
   
-      checkbox.classList ='p-5 ml-3';
-      checkbox1.classList ='p-5 ml-3';
-      checkbox2.classList ='p-5 ml-3';
+      checkbox.classList ='check1 p-5 ml-3';
+      checkbox1.classList ='check2 p-5 ml-3';
+      checkbox2.classList ='check3 p-5 ml-3';
   
       divGen.classList = 'd-inline mt-3';
       div1.classList = (' my-3 text-muted');
@@ -102,7 +102,7 @@ const selector = new DOMSelections;
      
     // append firs elemnt create d in the DOm then all the rest of elemnts created to it
       selector.form.insertAdjacentElement('afterbegin', divGen);
-     
+
       // append elements to the DOM
      divGen.appendChild(p);
       p.appendChild(space);
@@ -119,6 +119,9 @@ const selector = new DOMSelections;
       div3.appendChild(checkbox2);
       div3.appendChild(span2);
       div3.appendChild(button);
+
+  //call a function that allows only one checkbox to be checked
+  Questions.disableCheck(checkbox, checkbox1, checkbox2);
   }
   // display result function 
   static displayResult (value) {
@@ -194,6 +197,37 @@ const selector = new DOMSelections;
    const selector = new DOMSelections();
    selector.counterVar.textContent = counter;
   }
+  // a function I am proud of; it allows only one checkbos to be checked; when a checkbox is checked, it disable the other 2!
+static disableCheck (ans1, ans2, ans3) {
+  const selector = new DOMSelections;
+  
+  selector.formDiv.addEventListener('click', (e) => {
+    
+    if (e.target.classList.contains('check1') && ans1.checked === true) {
+       ans2.disabled = true;
+       ans3.disabled = true;
+    }else if (e.target.classList.contains('check1') && ans1.checked === false) {
+       ans2.disabled = false;
+       ans3.disabled = false;
+    }
+  
+    if (e.target.classList.contains('check2') && ans2.checked === true) {
+      ans1.disabled = true,
+      ans3.disabled = true;
+    }else if(e.target.classList.contains('check2') && ans2.checked === false) {
+      ans1.disabled = false,
+      ans3.disabled = false;
+    } 
+    if (e.target.classList.contains('check3') && ans3.checked === true) {
+       ans1.disabled = true,
+       ans2.disabled = true;
+    }else if (e.target.classList.contains('check3') && ans3.checked === false) {
+      ans1.disabled = false,
+      ans2.disabled = false;
+    }
+  })
+   
+  }
 };
 
 
@@ -235,18 +269,22 @@ function eventListener () {
     // grab the answer checked value here;
     const valueCI = [selector.form.answer1.value, selector.form.answer2.value, selector.form.answer3.value];
     //use destructuring 
-    [ans1, ans2, ans3] = valueCI
-   
+    [ans1, ans2, ans3] = valueCI;
+
+    answ1 = document.getElementById('answer1').checked;
+    answ2 = document.getElementById('answer2').checked;
+    answ3 = document.getElementById('answer3').checked;
+
+   console.log(answ1)
     // first logic flow, takes care of increasing counter by 1 on each click; 
-    if (document.getElementById('answer1').checked || document.getElementById('answer2').checked || document.getElementById('answer3').checked) {
+    if ( answ1 || answ2|| answ3) {
        counter === arr.length  ? counter = arr.length : counter += 1;
        Questions.showCounter(counter);
     }; 
     
     // second logic flow, takes care of progress variable increase 
-    if (document.getElementById('answer1').checked && ans1 === 'correct' || document.getElementById('answer2').checked && ans2 === 'correct' || document.getElementById('answer3').checked && ans3 === 'correct') {
+    if ( answ1 && ans1 === 'correct' || answ2 && ans2 === 'correct' ||  answ3 && ans3 === 'correct') {
       progressCount !== arr.length * 10 ? progressCount +=  10 : progressCount = arr.length * 10;
-     
     };
    
     // third logic flow, display result function once the counter has reched the length of the array question and display the result after 1 second;
@@ -256,7 +294,7 @@ function eventListener () {
       }, 1000);
       setTimeout(() => {
       location.reload()
-    }, 10000);
+    }, 15000);
     }; 
 
     
@@ -284,5 +322,6 @@ function eventListener () {
   } 
  });
 }
+
 
 
